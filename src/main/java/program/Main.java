@@ -17,10 +17,34 @@ public class Main {
     public static void main(String[] args) {
         //testRole();
         try {
-            //addQuestion("Як грецькою мовою називалося місто, яке заснувало колонію?", QuestionType.RADIO_BUTTON);//створюю питання
-//            addQuestionItem(1, "Магістрат", false);//додаю варіанти відповідей
-//            addQuestionItem(1, "Метрополія", true);
-//            addQuestionItem(1, "Мусейон", false);
+            Scanner input = new Scanner(System.in);
+            System.out.println("Введіть запитання");
+            String quest = input.nextLine();
+            addQuestion(quest, QuestionType.RADIO_BUTTON);
+
+            int id = 0;
+            Session context = HiberContext.getSessionFactory().openSession();
+            Query query = context.createQuery("FROM Question");
+            List<Question> questions = query.list();
+            for (Question question : questions)
+                id = question.getId();
+
+            String answer = "";
+            boolean isCorrect = false;
+            for (int i = 0; i < 3; i++) {
+                System.out.println("Введіть відповідь");
+                answer = input.nextLine();
+                System.out.println("Це вірна відповідь? y/n");
+                String isCorrectStr = input.nextLine();
+                if (isCorrectStr == "y")
+                    isCorrect = true;
+                else
+                    isCorrect = false;
+                addQuestionItem(id, answer, isCorrect);
+            }
+
+
+            context.close(); // закриває підключення
 
         } catch (Exception ex) {
             System.out.println("Виникла помилка" + ex.getMessage()); //видиться при помилці
