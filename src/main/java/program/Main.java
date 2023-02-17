@@ -43,6 +43,81 @@ public class Main {
 
     }
 
+    //метод для додавання фільтрів
+    private  static void addFilters(){
+        try (Session context = HiberContext.getSessionFactory().openSession()) {
+            Transaction tx = context.beginTransaction();
+            FilterValue filterValue = new FilterValue();
+            filterValue.setName("Value1");
+            context.save(filterValue);
+            FilterName filterName = new FilterName();
+            filterName.setName("Name1");
+            context.save(filterName);
+            FilterNameGroup filterNameGroup = new FilterNameGroup();
+            filterNameGroup.setFilterValue(filterValue);
+            filterNameGroup.setFilterName(filterName);
+            context.save(filterNameGroup);
+            Filter filter = new Filter();
+            filter.setFilterName(filterName);
+            filter.setFilterValue(filterValue);
+            Product pr = context.get(Product.class, 1);
+            filter.setProduct(pr);
+            context.save(filter);
+            tx.commit();
+        }
+    }
+
+    //метод для додавання у кошик
+    private static void addBasket(){
+        try (Session context = HiberContext.getSessionFactory().openSession()) {
+            Transaction tx = context.beginTransaction();
+            Baskets baskets = new Baskets();
+            User us = context.get(User.class, 1);
+            Product pr = context.get(Product.class, 1);
+            baskets.setUser(us);
+            baskets.setProduct(pr);
+            context.save(baskets);
+            tx.commit();
+        }
+    }
+
+    //метод для додавання предмету замовлення
+    private static void addOrderItem(){
+        try (Session context = HiberContext.getSessionFactory().openSession()) {
+            Transaction tx = context.beginTransaction();
+            var or = context.get(Order.class, 1);
+            var pr = context.get(Product.class, 1);
+            OrderItem orderItem = new OrderItem(false, new Date(), 200, 1, or, pr);
+            context.save(orderItem);
+            tx.commit();
+        }
+    }
+
+    //метод для додавання замовлення
+    private static void addOrder() {
+        try (Session context = HiberContext.getSessionFactory().openSession()) {
+            Transaction tx = context.beginTransaction();
+            var stat = context.get(OrderStatus.class, 1);
+            var us = context.get(User.class, 1);
+            Order order = new Order(false, new Date(), stat, us);
+            context.save(order);
+            tx.commit();
+        }
+    }
+
+    //метод для додавання статусу замовлення
+    private static void addOrderStatus() {
+        try (Session context = HiberContext.getSessionFactory().openSession()) {
+            Transaction tx = context.beginTransaction();
+            OrderStatus orderStatus = new OrderStatus();
+            orderStatus.setName("Доставка");
+            orderStatus.setDateCreated(new Date());
+            context.save(orderStatus);
+            tx.commit();
+        }
+    }
+
+
     //метод для додавання продукту в бд
     private static void addProduct() {
         try(Session context = HiberContext.getSessionFactory().openSession()) { //починаю сесію
@@ -85,7 +160,7 @@ public class Main {
             tx.commit();//роблю коміт
         }
     }
-    
+
 
     //метод для проходження тесту
     private static void passTest() throws SQLException {

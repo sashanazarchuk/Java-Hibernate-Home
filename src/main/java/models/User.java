@@ -27,8 +27,12 @@ public class User {
     @OneToMany(mappedBy = "user")//зв'язок один до багатьох
     private List<UserRole> userRoles;//список ролей користувачів
 
+    @OneToMany(mappedBy = "user")
+    private List<Baskets> baskets;
+
     public User() {
         userRoles = new ArrayList<>();
+        baskets = new ArrayList<>();
     }
 
     public User(String firstName, String lastName, String email, String phone, String password) {

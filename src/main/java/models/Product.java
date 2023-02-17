@@ -26,9 +26,17 @@ public class Product {
     private Category category;
     @OneToMany(mappedBy = "product")//зв'язок один до багатьох
     private List<ProductImage> productImages;//список фото продуктів
-
-    public Product() {
-        productImages = new ArrayList<>();
+    @OneToMany(mappedBy = "product")
+    private List<OrderItem> orderItems;
+    @OneToMany(mappedBy = "product")
+    private List<Filter> filters;
+    @OneToMany(mappedBy = "product")
+    private List<Baskets> baskets;
+    public Product(){
+    productImages = new ArrayList<>();
+    orderItems = new ArrayList<>();
+    filters = new ArrayList<>();
+    baskets = new ArrayList<>();
     }
 
     public Product(Date dateCreated, boolean isDelete, String name, String description, Category category) {

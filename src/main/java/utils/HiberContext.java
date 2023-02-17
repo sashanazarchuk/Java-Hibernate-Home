@@ -25,6 +25,14 @@ public class HiberContext {
             configuration.addAnnotatedClass(Category.class);
             configuration.addAnnotatedClass(Product.class);
             configuration.addAnnotatedClass(ProductImage.class);
+            configuration.addAnnotatedClass(Baskets.class);
+            configuration.addAnnotatedClass(OrderStatus.class);
+            configuration.addAnnotatedClass(Order.class);
+            configuration.addAnnotatedClass(OrderItem.class);
+            configuration.addAnnotatedClass(FilterValue.class);
+            configuration.addAnnotatedClass(FilterName.class);
+            configuration.addAnnotatedClass(FilterNameGroup.class);
+            configuration.addAnnotatedClass(Filter.class);
             //реєструємо сервіс на основі нашого конфігу
             StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder()
                     .applySettings(configuration.getProperties());
