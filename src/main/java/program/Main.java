@@ -1,46 +1,91 @@
 package program;
 
 import enums.QuestionType;
-import models.Question;
-import models.QuestionItems;
-import models.Role;
+import models.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import utils.HiberContext;
 
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         //testRole();
-        try {
-            Scanner input = new Scanner(System.in);
-            boolean cycle = true;
-            while (cycle) {
-                System.out.println("Виберіть дію \n 1)Пройти тест \n 2)Додати нове запитання \n 3)Вийти");
-                int action = Integer.parseInt(input.nextLine());
-                switch (action) {
-                    case 1:
-                        passTest();
-                        break;
-                    case 2:
-                        addConsoleQuestion();
-                        break;
-                    case 3:
-                        cycle = false;
-                        break;
-                    default:
-                        break;
-                }
-            }
-        } catch (Exception ex) {
-            System.out.println("Виникла помилка" + ex.getMessage()); //виводиться при помилці
+//        try {
+//            Scanner input = new Scanner(System.in);
+//            boolean cycle = true;
+//            while (cycle) {
+//                System.out.println("Виберіть дію \n 1)Пройти тест \n 2)Додати нове запитання \n 3)Вийти");
+//                int action = Integer.parseInt(input.nextLine());
+//                switch (action) {
+//                    case 1:
+//                        passTest();
+//                        break;
+//                    case 2:
+//                        addConsoleQuestion();
+//                        break;
+//                    case 3:
+//                        cycle = false;
+//                        break;
+//                    default:
+//                        break;
+//                }
+//            }
+//        } catch (Exception ex) {
+//            System.out.println("Виникла помилка" + ex.getMessage()); //виводиться при помилці
+//        }
+
+    try(Session context = HiberContext.getSessionFactory().openSession()){}
+
+    }
+
+    //метод для додавання продукту в бд
+    private static void addProduct() {
+        try(Session context = HiberContext.getSessionFactory().openSession()) { //починаю сесію
+            Transaction tx = context.beginTransaction();//починаю транзакцію для фіксації змін в бд
+            var cat = context.get(Category.class, 1);//вибираю категорю для продукту
+            Product p = new Product(new Date(), false, "Молоток", "Для цвяхів",cat);//додаю продукт в базу
+            context.save(p);//зберігаю зміни
+            ProductImage pi1 = new ProductImage(new Date(), false, "1.jpg", 1, p);//додаю фото до продукту
+            ProductImage pi2  = new ProductImage(new Date(), false, "2.jpg", 2, p);
+            context.save(pi1);//зберігаю фото
+            context.save(pi2);
+            tx.commit();//роблю коміт
         }
     }
 
+
+    //метод для додавання категорії
+    private static void addCategory(String name, String image) {
+        try(Session context = HiberContext.getSessionFactory().openSession()) {//починаю сесію
+            Category c = new Category(name,image,new Date(), false);//створюю нову категорію з назвою фото і датою
+            context.save(c);//зберігаю зміни
+        }
+    }
+
+
+    //метод для додавання ролі і користувача в ьд
+    private static void AddUserAndRoles() {
+        try(Session context = HiberContext.getSessionFactory().openSession()) {//починаю сесію
+            Transaction tx = context.beginTransaction();//починаю транзакцію для фіксації змін в бд
+            Role role = new Role();//створю об'єкт ролі
+            role.setName("Бухгалтер");//даю назву ролі
+            context.save(role);//зберігаю зміни
+            User user = new User("Андрій","Курносик","andy453@gmail.com",
+                    "+38096 87 63 786","23456");//створюю об'єкт користувача і запов'нюю дані
+            context.save(user);//зберігаю зміни
+            UserRole ur = new UserRole();//створюю об'єкт роль користувача
+            ur.setRole(role);//підставляю роль
+            ur.setUser(user);//підставляю користувача
+            context.save(ur);//зберігаю зміни
+            tx.commit();//роблю коміт
+        }
+    }
+    
 
     //метод для проходження тесту
     private static void passTest() throws SQLException {

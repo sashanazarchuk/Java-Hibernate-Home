@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.Generated;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 //Lombok.Data автоматично дозволяє застосовувати getter i setter
 @Data //дозволяє застосувати getter i setter для класа Role
@@ -16,5 +18,10 @@ public class Role {
 
     @Column(length = 255, nullable = false) // колонка для name довжина 255 і не може бути нуль
     private String name;
+    @OneToMany(mappedBy = "role")//зв'язок один до багатьох
+    private List<UserRole> userRoles;
 
+    public Role() {
+        userRoles = new ArrayList<>();
+    }
 }
